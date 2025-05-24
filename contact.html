@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact - Seth Amedonu</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Contact Me</h1>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="about.html">About</a> |
+      <a href="projects.html">Projects</a> |
+      <a href="resume.html">Resume</a> |
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Get in Touch</h2>
+      <form id="contactForm" method="POST" action="https://formspree.io/f/xrbqwzbq">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+        <div class="error" id="nameError">Please enter your name.</div>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="_replyto" required />
+        <div class="error" id="emailError">Please enter a valid email address.</div>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="6" required></textarea>
+        <div class="error" id="messageError">Please enter a message.</div>
+
+        <button type="submit">Send</button>
+      </form>
+
+      <div class="success-message" id="successMessage">
+        Thank you for contacting me! I will get back to you soon.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Seth Amedonu</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const successMessage = document.getElementById('successMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Clear previous errors
+      document.querySelectorAll('.error').forEach(el => el.style.display = 'none');
+
+      let valid = true;
+
+      // Validate name
+      const name = form.name.value.trim();
+      if (!name) {
+        document.getElementById('nameError').style.display = 'block';
+        valid = false;
+      }
+
+      // Validate email
+      const email = form._replyto.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
+        document.getElementById('emailError').style.display = 'block';
+        valid = false;
+      }
+
+      // Validate message
+      const message = form.message.value.trim();
+      if (!message) {
+        document.getElementById('messageError').style.display = 'block';
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Prepare data for Formspree
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          form.style.display = 'none';
+          successMessage.style.display = 'block';
+        } else {
+          alert('Oops! There was a problem submitting your form.');
+        }
+      } catch (error) {
+        alert('Oops! There was a problem submitting your form.');
+      }
+    });
+  </script>
+</body>
+</html>
